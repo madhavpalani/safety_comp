@@ -1,0 +1,7 @@
+$(document).ready(function () {
+    $('#alertTable').DataTable({
+        "searching": true,
+        "ordering": true,
+        "order": [[1, "desc"]]
+    });
+});

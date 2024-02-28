@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Alert History</title>
+    <link rel="icon" href="https://i.imgur.com/nW1yI4n.png" type="image/x-icon">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=swap');
+        *{
+            margin:0;
+            padding:0;
+        }
+        body{
+            color: #000;
+            font-family: 'Poppins', sans-serif;
+        }
+        nav{
+            display:flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 4px 4px 8px rgb(0,0,0,0.1);
+            padding: 1rem 2.5rem;
+        }
+        .navbar a{
+            text-decoration: none;
+            margin:0rem 2rem;
+            color: black;
+            font-size: 16px;
+        }
+        nav a:hover{
+            color:#2419fa;
+        }
+        nav a img{
+            width:90px;
+            height:25px;
+            object-fit: contain;
+        }
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin: 20px auto;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #e0e0e0;
+        }
+        .container {
+            display: flex;
+        }
+        .container span{
+            margin:2rem 0rem;
+            background-color:#e0dfdf ;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        span input{
+            outline:none;
+            border:none;
+            padding:0.4rem 1rem;
+            /* border: 2px solid rgb(76, 76, 80); */
+            background-color: #e0dfdf;
+            /* border-radius:15px; */
+            font-size: 16px;
+            margin-right:1rem;
+        }
+        span button{
+            padding:0.5rem 1rem;
+            background-color: #082687;
+            border-radius: 15px;
+            font-size: 16px;
+            color:white;
+        }
+        .container section,.chart-container{
+            padding:1.5rem 2rem;
+            text-align: center;
+            width:50%;
+            display:flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .chart-container div{
+            margin:2rem 0rem;
+        }
+    </style>
+
+</head>
+<body>
+
+    <nav>
+        <a id="title" href="{% url 'index' %}"><img src="https://maxbyte.co/wp-content/uploads/2021/06/Maxbyte.png" alt=""></a>
+
+        <div class="navbar">
+            <a href="{% url 'web' %}">Move to Detection</a>
+            <a href="{% url 'admin:index' %}">Admin</a>
+        </div>
+    </nav>
+    <div class="container">
+        <section>
+            <h1>Alert History</h1>
+            <span>
+                <input type="text" id="filterInput" placeholder="Enter keyword to filter">
+                <button onclick="filterTable()">Filter</button>
+            </span>
+            <table id="alertTable">
+                <tr>
+                    <th>Log</th>
+                    <th>Timestamp</th>
+                </tr>
+                {% for alert in alerts reversed%}
+                    <tr>
+                        <td>{{ alert.name }}</td>
+                        <td>{{ alert.timestamp }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </section>
+        <section class="chart-container">
+            <h1 style="margin-bottom:2rem;">Visualization</h1>
+            <div class="graph1">
+                {{ chart_html|safe }}
+            </div>
+            <div class="graph">
+                {{ chart_html_pie|safe }}
+            </div>
+        </section>
+    </div>
+<script>
+    function filterTable() {
+        var input, filter, table, tr, td, i, j, txtValue;
+        input = document.getElementById("filterInput");
+        filter = input.value.toUpperCase().split(' '); // Split input into keywords
+        table = document.getElementById("alertTable");
+        tr = table.getElementsByTagName("tr");
+
+        // Loop through all table rows
+        for (i = 0; i < tr.length; i++) {
+            var found = false;
+            for (j = 0; j < 2; j++) { // Loop through both columns (0 and 1)
+                td = tr[i].getElementsByTagName("td")[j];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    var txtValueUpper = txtValue.toUpperCase();
+                    found = filter.every(keyword => txtValueUpper.includes(keyword)); // Check if all keywords are present
+                    if (found) {
+                        break;
+                    }
+                }
+            }
+            if (found) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
+
+
+
